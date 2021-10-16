@@ -28,16 +28,10 @@ nodo = [0,0;8,0;8,6;0,6];
 %% Calcular largos
 L = zeros(barras, 1);
 for i = 1:barras
-    n1 = barra(i, 1);
-    n2 = barra(i, 2);
-    L(i) = sqrt((nodo(n2, 1) - nodo(n1, 1))^2 + (nodo(n2, 2) - nodo(n1, 2))^2);
+    n1 = barras(i, 1);
+    n2 = barras(i, 2);_
+    L(i) = sqrt((nodo(n2, 1) - nodo(m))^2)
 end
 
 %% Calcular lambdas
-lambda = zeros(barras, 2);
-for i = 1:barras
-    n1 = barra(i, 1);
-    n2 = barra(i, 2);
-    lambda(i, 1) = (nodo(n2, 1) - nodo(n1, 1)) / L(i);
-    lambda(i, 2) = (nodo(n2, 2) - nodo(n1, 2)) / L(i);
-end
+
