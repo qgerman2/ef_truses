@@ -20,14 +20,16 @@ for i = 1:barras
 end
 %}
 
-barras = 4;
-barra = [1,3;1,4;3,4;2,3];
 nodos = 4;
 nodo = [0,0;8,0;8,6;0,6];
+barras = 4;
+barra = [1,3;1,4;3,4;2,3];
 barrastemp = 2;
 barratemp = [1, 4];
 alpha = 1*10^(-5);
 deltaT = 40;
+variablesfijas = 4;
+variablefija = [1,1;1,2;2,1;2,2];
 
 %% Calcular largos
 L = zeros(barras, 1);
@@ -96,3 +98,7 @@ for i = 1:barrastemp
     vtemp(n2 * 2 - 1, i) = V(3);
     vtemp(n2 * 2, i) = V(4);
 end
+
+%% Reducir sistema
+rigidez(2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1, :) = [];
+rigidez(:, 2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1) = [];
