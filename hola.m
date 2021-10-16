@@ -42,8 +42,41 @@ for i = 1:barras
     lambda(i, 2) = (nodo(n2, 2) - nodo(n1, 2)) / L(i);
 end
 
-%% Definir matrices
-rigidezlocal = zeros(barras, 4, 4);
+%% Definir rigideces locales
+rigidezlocal = zeros(4, 4, barras);
 for i = 1:barras
     rigidezlocal(:, :, i) = rigidez([lambda(i, 1), lambda(i, 2)], L(i));
+end
+
+%% Ajustar matrices a tamaño de nodos*2 x nodos*2
+rigidezexpandida = zeros(nodos*2, nodos*2, barras);
+for i = 1:barras
+    n1 = barra(i, 1);
+    n2 = barra(i, 2);
+    %%4x4 superior izquierda
+    rigidezexpandida(n1 * 2 - 1, n1 * 2 - 1, i) = rigidezlocal(1, 1, i);
+    rigidezexpandida(n1 * 2, n1 * 2 - 1, i) = rigidezlocal(2, 1, i);
+    rigidezexpandida(n1 * 2 - 1, n1 * 2, i) = rigidezlocal(1, 2, i);
+    rigidezexpandida(n1 * 2, n1 * 2, i) = rigidezlocal(2, 2, i);
+    %%4x4 inferior izquierda
+    rigidezexpandida(n2 * 2 - 1, n1 * 2 - 1, i) = rigidezlocal(3, 1, i);
+    rigidezexpandida(n2 * 2, n1 * 2 - 1, i) = rigidezlocal(4, 1, i);
+    rigidezexpandida(n2 * 2 - 1, n1 * 2, i) = rigidezlocal(3, 2, i);
+    rigidezexpandida(n2 * 2, n1 * 2, i) = rigidezlocal(4, 2, i);
+    %%4x4 superior derecha
+    rigidezexpandida(n1 * 2 - 1, n2 * 2 - 1, i) = rigidezlocal(1, 3, i);
+    rigidezexpandida(n1 * 2, n2 * 2 - 1, i) = rigidezlocal(2, 3, i);
+    rigidezexpandida(n1 * 2 - 1, n2 * 2, i) = rigidezlocal(1, 4, i);
+    rigidezexpandida(n1 * 2, n2 * 2, i) = rigidezlocal(2, 4, i);
+    %%4x4 inferior derecha
+    rigidezexpandida(n2 * 2 - 1, n2 * 2 - 1, i) = rigidezlocal(3, 3, i);
+    rigidezexpandida(n2 * 2, n2 * 2 - 1, i) = rigidezlocal(4, 3, i);
+    rigidezexpandida(n2 * 2 - 1, n2 * 2, i) = rigidezlocal(3, 4, i);
+    rigidezexpandida(n2 * 2, n2 * 2, i) = rigidezlocal(4, 4, i);
+end
+
+%% Matriz de rigidez completa
+rigidez = zeros(nodos * 2, nodos * 2);
+for i = 1:barras
+   rigidez = rigidez + rigidezexpandida(:, :, i);
 end
