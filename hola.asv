@@ -88,22 +88,20 @@ for i = 1:barras
 end
 
 %% Vector de efecto de temperatura
-vtemp = zeros(nodos * 2, barrastemp);
+vtemp = zeros(nodos * 2, 1);
 for i = 1:barrastemp
     n1 = barra(barratemp(i), 1);
     n2 = barra(barratemp(i), 2);
     V = vectortemp(1, 1, alpha, deltaT, [lambda(i, 1), lambda(i, 2)]);
-    vtemp(n1 * 2 - 1, i) = V(1);
-    vtemp(n1 * 2, i) = V(2);
-    vtemp(n2 * 2 - 1, i) = V(3);
-    vtemp(n2 * 2, i) = V(4);
+    vtemp(n1 * 2 - 1) = vtemp(n1 * 2 - 1, i) + V(1);
+    vtemp(n1 * 2) = vtemp(n1 * 2, i) + V(2);
+    vtemp(n2 * 2 - 1) = vtemp(n2 * 2 - 1, i) + V(3);
+    vtemp(n2 * 2,i) = vtemp(n2 * 2, i) + V(4);
 end
 
-%% Reducir sistema
-for i = 1:variablesfijas
-    n = variablefija(i, 1);
-    eje = variablefija(i, 2);
-    ks(i) = 2 * n - 1 + eje - 1;
-    rigidez(:, k) = [];
-    rigidez(k, :) = [];
-end
+%% Reducir matriz rigidez
+rigidez(2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1, :) = [];
+rigidez(:, 2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1) = [];
+
+%% Reducir vector temperatura
+vtemp(2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1, :) = [];

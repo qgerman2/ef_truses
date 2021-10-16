@@ -29,7 +29,7 @@ barratemp = [1, 4];
 alpha = 1*10^(-5);
 deltaT = 40;
 variablesfijas = 4;
-variablefija = [1,1;1,2;2,1;2,2];
+variablefija = [2,2;1,2;2,1;1,1];
 
 %% Calcular largos
 L = zeros(barras, 1);
@@ -88,17 +88,30 @@ for i = 1:barras
 end
 
 %% Vector de efecto de temperatura
-vtemp = zeros(nodos * 2, barrastemp);
+vtemp = zeros(nodos * 2, 1);
 for i = 1:barrastemp
     n1 = barra(barratemp(i), 1);
     n2 = barra(barratemp(i), 2);
     V = vectortemp(1, 1, alpha, deltaT, [lambda(i, 1), lambda(i, 2)]);
-    vtemp(n1 * 2 - 1, i) = V(1);
-    vtemp(n1 * 2, i) = V(2);
-    vtemp(n2 * 2 - 1, i) = V(3);
-    vtemp(n2 * 2, i) = V(4);
+    vtemp(n1 * 2 - 1) = vtemp(n1 * 2 - 1) + V(1);
+    vtemp(n1 * 2) = vtemp(n1 * 2) + V(2);
+    vtemp(n2 * 2 - 1) = vtemp(n2 * 2 - 1) + V(3);
+    vtemp(n2 * 2) = vtemp(n2 * 2) + V(4);
 end
 
-%% Reducir sistema
+%% Reducir matriz rigidez
 rigidez(2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1, :) = [];
 rigidez(:, 2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1) = [];
+
+%% Reducir vector temperatura
+vtemp(2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1, :) = [];
+
+%% Ecuacion simbolica
+variables = sym("v", [1 2*nodos]);
+variables(:, 2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1) = [];
+
+eq = zeros(2*nodos - size(variablefija, 1), 1) == rigidez * variables' + vtemp;
+S = vpasolve(eq, variables);
+
+%% Imprimir resultados
+
