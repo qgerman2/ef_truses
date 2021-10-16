@@ -24,6 +24,10 @@ barras = 4;
 barra = [1,3;1,4;3,4;2,3];
 nodos = 4;
 nodo = [0,0;8,0;8,6;0,6];
+barrastemp = 2;
+barratemp = [1, 4];
+alpha = 1*10^(-5);
+deltaT = 40;
 
 %% Calcular largos
 L = zeros(barras, 1);
@@ -42,7 +46,7 @@ for i = 1:barras
     lambda(i, 2) = (nodo(n2, 2) - nodo(n1, 2)) / L(i);
 end
 
-%% Definir rigideces locales
+%% Definir rigideces de 4x4
 rigidezlocal = zeros(4, 4, barras);
 for i = 1:barras
     rigidezlocal(:, :, i) = rigidez([lambda(i, 1), lambda(i, 2)], L(i));
@@ -79,4 +83,16 @@ end
 rigidez = zeros(nodos * 2, nodos * 2);
 for i = 1:barras
    rigidez = rigidez + rigidezexpandida(:, :, i);
+end
+
+%% Vector de efecto de temperatura
+vtemp = zeros(nodos * 2, barrastemp);
+for i = 1:barrastemp
+    n1 = barra(barratemp(i), 1);
+    n2 = barra(barratemp(i), 2);
+    V = vectortemp(1, 1, alpha, deltaT, [lambda(i, 1), lambda(i, 2)]);
+    vtemp(n1 * 2 - 1, i) = V(1);
+    vtemp(n1 * 2, i) = V(2);
+    vtemp(n2 * 2 - 1, i) = V(3);
+    vtemp(n2 * 2, i) = V(4);
 end
