@@ -41,3 +41,9 @@ for i = 1:barras
     lambda(i, 1) = (nodo(n2, 1) - nodo(n1, 1)) / L(i);
     lambda(i, 2) = (nodo(n2, 2) - nodo(n1, 2)) / L(i);
 end
+
+%% Definir matrices
+rigidezlocal = zeros(barras, 4, 4);
+for i = 1:barras
+    rigidezlocal(:, :, i) = rigidez([lambda(i, 1), lambda(i, 2)], L(i));
+end
