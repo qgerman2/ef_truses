@@ -63,7 +63,7 @@ alpha = 1*10^(-5);
 deltaT = 40;
 variablesfijas = 4;
 variablefija = [2,2;1,2;2,1;1,1];
-
+%}
 
 %{
 Ejemplo structural analysis
@@ -136,38 +136,37 @@ for i = 1:barras
    rigidez = rigidez + rigidezexpandida(:, :, i);
 end
 
+rigidez
+
 %% Vector de efecto de temperatura
 vtemp = zeros(nodos * 2, 1);
 for i = 1:barrastemp
     n1 = barra(barratemp(i), 1);
     n2 = barra(barratemp(i), 2);
-    V = vectortemp(alpha, deltaT, [lambda(barratemp(i), 1), lambda(barratemp(i), 2)]) * EA(barratemp(i));
+    V = vectortemp(1, 1, alpha, deltaT, [lambda(barratemp(i), 1), lambda(barratemp(i), 2)]) * EA(barratemp(i));
     vtemp(n1 * 2 - 1) = vtemp(n1 * 2 - 1) + V(1);
     vtemp(n1 * 2) = vtemp(n1 * 2) + V(2);
     vtemp(n2 * 2 - 1) = vtemp(n2 * 2 - 1) + V(3);
     vtemp(n2 * 2) = vtemp(n2 * 2) + V(4);
 end
 
-
 %% Reducir matriz rigidez
-reductor = 2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1;
-
-rigidez(reductor, :) = [];
-rigidez(:, reductor) = [];
+rigidez(2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1, :) = [];
+rigidez(:, 2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1) = [];
 
 %% Reducir vector temperatura
-vtemp(reductor, :) = [];
+vtemp(2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1, :) = [];
 
 %% Ecuacion simbolica
 variables = sym("v", [1 2*nodos]);
-variables(:, reductor) = [];
+variables(:, 2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1) = [];
 
-eq = zeros(2*nodos - variablesfijas, 1) == rigidez * variables' + vtemp;
+eq = zeros(2*nodos - size(variablefija, 1), 1) == rigidez * variables' + vtemp;
 S = vpasolve(eq, variables);
 
 %% Imprimir resultados
 mm = [1:2*nodos];
-mm(:, reductor) = [];
+mm(:, 2 * variablefija(:, 1) - 1 + variablefija(:, 2) - 1) = [];
 for i = 1:length(mm)
    if mod(mm(i), 2) ~= 0 
        fprintf("x%d: %f", ceil(mm(i)/2), S.("v"+mm(i)));

@@ -1,5 +1,5 @@
-function [V] = vectortemp(A, E, alpha, deltaT, lambda)
-    V = A*E*alpha*deltaT*[
+function [V] = vectortemp(alpha, deltaT, lambda)
+    V = alpha*deltaT*[
         lambda(1);
         lambda(2);
         -lambda(1);
