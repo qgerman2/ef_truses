@@ -1,8 +1,37 @@
 clc; clearvars; close all;
 
-%% Entrada del usuario
-
+%% Ejemplos de entrada
+%Proyecto 1 de elementos finitos
 %{
+nodos = 4;
+nodo = [0,0;8,0;8,6;0,6];
+barras = 4;
+barra = [1,3;1,4;3,4;2,3];
+EA = [2E7*1000*20*10E-4;2E6*1000*0.15;2E6*1000*0.15;2E7*1000*20*10E-4];
+barrastemp = 2;
+barratemp = [1, 4];
+alpha = 1*10^(-5);
+deltaT = 40;
+variablesfijas = 4;
+variablefija = [2,2;1,2;2,1;1,1];
+%}
+
+%Ejemplo structural analysis
+%{
+nodos = 4;
+nodo = [0,0;0,10;10,0;10,10];
+barras = 6;
+barra = [1,3;1,4;1,2;2,4;2,3;3,4];
+EA = [21750000;21750000;21750000;21750000;21750000;21750000];
+barrastemp = 1;
+barratemp = [2];
+alpha = 6.5*10^(-6);
+deltaT = 150;
+variablesfijas = 3;
+variablefija = [4,1;4,2;3,1];
+%}
+
+%% Entrada del usuario
 nodos = input("Cuantos nodos hay? : ");
 nodo = zeros(nodos, 2);
 for i = 1:nodos
@@ -47,38 +76,6 @@ for i = 1:variablesfijas
     fprintf("NODO %d ", variablefija(i, 1));
     variablefija(i,2) = input("Fijo horizontal (1) o vertical (2)? : ");
 end
-
-%}
-
-
-%Proyecto 1 de elementos finitos
-nodos = 4;
-nodo = [0,0;8,0;8,6;0,6];
-barras = 4;
-barra = [1,3;1,4;3,4;2,3];
-EA = [400000000;3.000000000000000e+09;3.000000000000000e+09;400000000];
-barrastemp = 2;
-barratemp = [1, 4];
-alpha = 1*10^(-5);
-deltaT = 40;
-variablesfijas = 4;
-variablefija = [2,2;1,2;2,1;1,1];
-
-
-%{
-Ejemplo structural analysis
-nodos = 4;
-nodo = [0,0;0,10;10,0;10,10];
-barras = 6;
-barra = [1,3;1,4;1,2;2,4;2,3;3,4];
-EA = [21750000;21750000;21750000;21750000;21750000;21750000];
-barrastemp = 1;
-barratemp = [2];
-alpha = 6.5*10^(-6);
-deltaT = 150;
-variablesfijas = 3;
-variablefija = [4,1;4,2;3,1];
-%}
 
 %% Calcular largos
 L = zeros(barras, 1);
